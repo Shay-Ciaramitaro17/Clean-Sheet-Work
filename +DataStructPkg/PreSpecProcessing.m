@@ -471,6 +471,7 @@ if ~isfield(Aircraft,"Settings")
     Aircraft.Settings.VisualizeAircraft = NaN;
     Aircraft.Settings.Dir.Size = NaN;
     Aircraft.Settings.Dir.Oper = NaN;
+    Aircraft.Settings.TkoTypeFlag = NaN; 
 else
     if ~isfield(Aircraft.Settings,"TkoPoints")
         Aircraft.Settings.TkoPoints = NaN;
@@ -525,6 +526,9 @@ else
         if ~isfield(Aircraft.Settings.Dir,"Oper")
             Aircraft.Settings.Dir.Oper = NaN;
         end
+    end
+    if ~isfield(Aircraft.Settings, "TkoTypeFlag")
+        Aircraft.Settings.TkoTypeFlag = NaN;
     end
 end
 
