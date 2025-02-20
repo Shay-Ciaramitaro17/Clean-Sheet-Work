@@ -79,8 +79,8 @@ TOffTime = 60;
 % initial velocity is zero------[scalar]
 V_i = 0;
 
-% assume no temperature variation-------[scalar]
-dISA = 0;
+% temperature variation set by user, defaults to 0 -------[scalar]
+dISA = Aircraft.Specs.Performance.dISA;
 
 % ----------------------------------------------------------
 

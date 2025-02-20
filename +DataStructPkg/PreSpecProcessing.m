@@ -47,6 +47,7 @@ if ~ isfield(Aircraft,"Specs")
     Aircraft.Specs.Propulsion.Eta.Prop = NaN;
     Aircraft.Specs.Propulsion.MDotCF = NaN;
     Aircraft.Specs.Propulsion.Arch.Type = NaN;
+    Aircraft.Specs.Propulsion.dISA = NaN;
     Aircraft.Specs.Power.SpecEnergy.Fuel = NaN;
     Aircraft.Specs.Power.SpecEnergy.Batt = NaN;
     Aircraft.Specs.Power.Eta.EM = NaN;
@@ -113,6 +114,7 @@ else
         Aircraft.Specs.Performance.Alts.Crs = NaN;
         Aircraft.Specs.Performance.RCMax = NaN;
         Aircraft.Specs.Performance.Range = NaN;
+        Aircraft.Specs.Performance.dISA = NaN;
 
     else
         if ~isfield(Aircraft.Specs.Performance,"Vels")
@@ -139,6 +141,9 @@ else
         end
         if ~isfield(Aircraft.Specs.Performance,"Range")
             Aircraft.Specs.Performance.Range = NaN;
+        end
+        if ~isfield(Aircraft.Specs.Performance, "dISA")
+            Aircraft.Specs.Performance.dISA = NaN;
         end
     end
 

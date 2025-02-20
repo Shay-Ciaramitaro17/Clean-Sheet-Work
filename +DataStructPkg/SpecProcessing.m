@@ -275,6 +275,7 @@ DefaultPerformance.Alts.Tko = 0;             % good
 % DefaultPerformance.Alts.Crs = 0;            *regression*
 % DefaultPerformance.Range =                 *required*
 DefaultPerformance.RCMax = 10.5;             % m/s
+DefaultPerformance.dISA = 0;
 switch TLAR.Class
     case "Turbofan"
         DefaultPerformance.Vels.Tko = UnitConversionPkg.ConvVel(135,'kts','m/s');
