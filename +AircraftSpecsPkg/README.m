@@ -418,12 +418,19 @@ function [] = README()
 %                Units / Default Value: -- / EAP Directory
 %                NOTE: Not recommended to modify this variable
 %           ---------------------------------------------------------------
-%           (76) Aircraft.Geometry.LengthSet
+%           (76) Aircraft.Settings.TkoTypeFlag
+%                Description: Select takeoff analysis parameter used
+%                Units / Default Value: -- / 1
+%                Note 1: Options are:
+%                       1 (time)
+%                      -1 (distance)
+%           ---------------------------------------------------------------
+%           (77) Aircraft.Geometry.LengthSet
 %                Description: Fuselage length (used in aircraft
 %                visualization).
 %                Units / Default Value: meters / PRED
 %           ---------------------------------------------------------------
-%           (77) Aircraft.Geometry.Preset
+%           (78) Aircraft.Geometry.Preset
 %                Description: Geometry specification file
 %                Units / Default Value: -- / see note
 %                NOTE 1: A user may create their own aircraft geometry file
