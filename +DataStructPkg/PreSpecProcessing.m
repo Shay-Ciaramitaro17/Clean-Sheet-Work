@@ -30,6 +30,9 @@ if ~ isfield(Aircraft,"Specs")
     Aircraft.Specs.Performance.Alts.Crs = NaN;
     Aircraft.Specs.Performance.RCMax = NaN;
     Aircraft.Specs.Performance.Range = NaN;
+    Aircraft.Specs.Performance.dISA = NaN;
+    Aircraft.Specs.Performance.TkoTime = NaN;
+    Aircraft.Specs.Performance.TkoDist = NaN;
     Aircraft.Specs.Aero.L_D.Clb = NaN;
     Aircraft.Specs.Aero.L_D.Crs = NaN;
     Aircraft.Specs.Aero.L_D.Des = NaN;
@@ -115,6 +118,8 @@ else
         Aircraft.Specs.Performance.RCMax = NaN;
         Aircraft.Specs.Performance.Range = NaN;
         Aircraft.Specs.Performance.dISA = NaN;
+        Aircraft.Specs.Performance.TkoTime = NaN;
+        Aircraft.Specs.Performance.TkoDist = NaN;
 
     else
         if ~isfield(Aircraft.Specs.Performance,"Vels")
@@ -144,6 +149,12 @@ else
         end
         if ~isfield(Aircraft.Specs.Performance, "dISA")
             Aircraft.Specs.Performance.dISA = NaN;
+        end
+        if ~isfield(Aircraft.Specs.Performance, "TkoTime")
+            Aircraft.Specs.Performance.TkoTime = NaN;
+        end
+        if ~isfield(Aircraft.Specs.Performance, "TkoDist")
+            Aircraft.Specs.Performance.TkoDist = NaN;
         end
     end
 
