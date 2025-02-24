@@ -168,60 +168,88 @@ Aircraft.Mission.History.SI.Power.LamPSES(SegBeg:SegEnd, :) = LamPSES;
 %                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% if there is no CL provided, use the simple method 
+% If there is no CL provided, use the simple method 
 if isnan(Aircraft.Specs.Aero.CL.Tko)
 
-    % convert the takeoff velocity to TAS
+    % Convert the takeoff velocity to TAS
     [~, V_to, ~, ~, ~, ~, ~] = MissionSegsPkg.ComputeFltCon( ...
                                AltEnd, dISA, vtype, V_to);
     
-    % assume acceleration is constant during ground rolling-------[scalar]
+    % Assume acceleration is constant during ground rolling-------[scalar]
     
-    % if time is selected, calculate velocity using time input
+    % If time is selected, calculate velocity using time input
     if Aircraft.Settings.TkoTypeFlag > 0
         dv_dt = (V_to - V_i) / ToffTime;
     
-    % if distance is selected, calculate velocity using distance
+    % If distance is selected, calculate velocity using distance
     else
         dv_dt = ( V_to^2 - V_i^2 ) / (2 * ToffDist);
     end
+  
+
+
+% If user provides a takeoff CL, use a more detailed method
+else
     
+    CLTko = Aircraft.Specs.Aero.CL.Tko;
+
+    % Get wing area from wing loading
+    S = MTOW / Aircraft.Specs.Aero.W_S.SLS;
     
-    % the distance traveled in each time point------[npoint x 1]
-    Dist = 0.5 .* dv_dt .* Time .^ 2;
+    % Get density 
+    [~, ~, ~, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon( ...
+                               AltEnd, dISA, vtype, V_i);
+
+    % Calculate takeoff velocity
+    V_to = sqrt(2 * MTOW / (Rho * CLTko * S ));
+
+    % Use kinematics and time or distance requirement to find acceleration
+    % If time is selected, calculate velocity using time input
+    if Aircraft.Settings.TkoTypeFlag > 0
+        dv_dt = (V_to - V_i) / ToffTime;
     
-    % instantenous velocity for each time------[npoint x 1]
-    V_ins = dv_dt .* Time;
-    
-    % get the flight conditions------[npoint x 1]      
-    [EAS, TAS, Mach, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon(...
-                                     Alt, dISA, "TAS", V_ins);
-    
-    % remember the flight conditions
-    Aircraft.Mission.History.SI.Performance.TAS( SegBeg:SegEnd) = TAS ;
-    Aircraft.Mission.History.SI.Performance.Rho( SegBeg:SegEnd) = Rho ;
-    Aircraft.Mission.History.SI.Performance.Time(SegBeg:SegEnd) = Time;
-    Aircraft.Mission.History.SI.Performance.Mach(SegBeg:SegEnd) = Mach;
-    Aircraft.Mission.History.SI.Performance.Alt( SegBeg:SegEnd) = Alt ;
-                                 
-    % compute the power available
-    Aircraft = PropulsionPkg.PowerAvailable(Aircraft);
-    
-    % for full throttle, recompute the operational power splits
-    Aircraft = PropulsionPkg.RecomputeSplits(Aircraft, SegBeg, SegEnd);
-    
-    % assume all available power is for flying
-    Preq = Inf(npoint, 1);
-    
-    % compute the specific excess power (will be 0 - did this b/c we don't know drag at takeoff)
-    Ps = zeros(npoint, 1);
-    
-    % kinetic Energy------[npoint x 1]
-    KE = 0.5 .* Mass .* TAS .^ 2;
-    
-    % potential energy------[npoint x 1]
-    PE = Mass .* g .* Alt;
+    % If distance is selected, calculate velocity using distance
+    else
+        dv_dt = ( V_to^2 - V_i^2 ) / (2 * ToffDist);
+    end
+
 end
+
+ % the distance traveled in each time point------[npoint x 1]
+Dist = 0.5 .* dv_dt .* Time .^ 2;
+
+% instantanous velocity for each time------[npoint x 1]
+V_ins = dv_dt .* Time;
+
+% get the flight conditions------[npoint x 1]      
+[EAS, TAS, Mach, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon(...
+                                 Alt, dISA, "TAS", V_ins);
+
+
+% remember the flight conditions
+Aircraft.Mission.History.SI.Performance.TAS( SegBeg:SegEnd) = TAS ;
+Aircraft.Mission.History.SI.Performance.Rho( SegBeg:SegEnd) = Rho ;
+Aircraft.Mission.History.SI.Performance.Time(SegBeg:SegEnd) = Time;
+Aircraft.Mission.History.SI.Performance.Mach(SegBeg:SegEnd) = Mach;
+Aircraft.Mission.History.SI.Performance.Alt( SegBeg:SegEnd) = Alt ;
+                             
+% compute the power available
+Aircraft = PropulsionPkg.PowerAvailable(Aircraft);
+
+% for full throttle, recompute the operational power splits
+Aircraft = PropulsionPkg.RecomputeSplits(Aircraft, SegBeg, SegEnd);
+
+% assume all available power is for flying
+Preq = Inf(npoint, 1);
+
+% compute the specific excess power (will be 0 - did this b/c we don't know drag at takeoff)
+Ps = zeros(npoint, 1);
+
+% kinetic Energy------[npoint x 1]
+KE = 0.5 .* Mass .* TAS .^ 2;
+
+% potential energy------[npoint x 1]
+PE = Mass .* g .* Alt;
 
 % ----------------------------------------------------------
 
