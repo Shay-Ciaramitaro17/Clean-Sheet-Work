@@ -74,7 +74,8 @@ vtype = Aircraft.Mission.Profile.TypeEnd(SegsID);
 g = 9.81;
 
 % ground rolling second------[scalar-second]
-TOffTime = 60; 
+ToffTime = Aircraft.Specs.Performance.TkoTime; 
+ToffDist = Aircraft.Specs.Performance.TkoDist;
 
 % initial velocity is zero------[scalar]
 V_i = 0;
@@ -92,7 +93,7 @@ dISA = Aircraft.Specs.Performance.dISA;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % time point------[npoint x 1]
-Time = linspace(0, TOffTime, npoint)';
+Time = linspace(0, ToffTime, npoint)';
 
 % rate of climb------[npoint x 1]
 dh_dt = zeros(npoint,1);
@@ -172,7 +173,16 @@ Aircraft.Mission.History.SI.Power.LamPSES(SegBeg:SegEnd, :) = LamPSES;
                            AltEnd, dISA, vtype, V_to);
 
 % assume acceleration is constant during ground rolling-------[scalar]
-dv_dt = (V_to - V_i) / TOffTime;
+
+% if time is selected, calculate velocity using time input
+if Aircraft.Settings.TkoTypeFlag > 0
+    dv_dt = (V_to - V_i) / ToffTime;
+
+% if distance is selected, calculate velocity using distance
+else
+    dv_dt = ( V_to^2 - V_i^2 ) / (2 * ToffDist);
+end
+
 
 % the distance traveled in each time point------[npoint x 1]
 Dist = 0.5 .* dv_dt .* Time .^ 2;

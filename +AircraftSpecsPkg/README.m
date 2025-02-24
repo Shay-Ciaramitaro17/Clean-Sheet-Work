@@ -22,7 +22,7 @@ function [] = README()
 %     Janki Patel
 %     Michael Tsai
 % 
-% README last updated: 24 apr 2024
+% README last updated: 20 feb 2025
 % 
 % -------------------------------------------------------------------------
 %
@@ -130,15 +130,15 @@ function [] = README()
 %                Description: Takekoff time
 %                Units / Default Value: seconds / 60
 %                NOTE: Whether TkoDist or TkoTime is used depends on
-%                Aircraft.Settings.TkoTypeFlag. This must set to 1 for time
-%                (default) or -1 for distance. 
+%                Aircraft.Settings.TkoTypeFlag. This defaults to 1 for time
+%                or can be set to -1 for distance. 
 %           --------------------------------------------------------------- 
 %           (12) Aircraft.Specs.Performance.TkoDist
 %                Description: Takeoff distance
 %                Units / Default Value: meters / 3000
 %                NOTE: Whether TkoDist or TkoTime is used depends on
-%                Aircraft.Settings.TkoTypeFlag. This must set to 1 for time
-%                (default) or -1 for distance. 
+%                Aircraft.Settings.TkoTypeFlag. This defaults to 1 for time
+%                or can be set to -1 for distance. 
 %           ---------------------------------------------------------------
 %           (13) Aircraft.Specs.Aero.L_D.Clb
 %                Description: Lift to drag ratio during climb
