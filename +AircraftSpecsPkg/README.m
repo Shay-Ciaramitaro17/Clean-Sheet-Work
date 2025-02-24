@@ -160,37 +160,43 @@ function [] = README()
 %                Units / Default Value: kilogram_(meter^2) / PRED
 %                NOTE: SLS refers to MTOW_(Wing Area)
 %           ---------------------------------------------------------------
-%           (17) Aircraft.Specs.Weight.MTOW
+%           (17) Aircraft.Specs.Aero.CL.Tko
+%                Description: CL at takeoff
+%                Units / Default Value: -- / NaN
+%                NOTE: If user does not provide a value, a simple takeoff
+%                analysis will be performed.
+%           ---------------------------------------------------------------
+%           (18) Aircraft.Specs.Weight.MTOW
 %                Description: Maximum takeoff weight (mass)
 %                Units / Default Value: kilograms / PRED
 %                NOTE: This value is used as an initial guess in the sizing
 %                      iteration, and will be overwritten during sizing
 %           ---------------------------------------------------------------
-%           (18) Aircraft.Specs.Weight.EG
+%           (19) Aircraft.Specs.Weight.EG
 %                Description: Electric generator weight (mass)
 %                Units / Default Value: kilograms / 0
 %                NOTE: This value is used as an initial guess in the sizing
 %                      iteration, and will be overwritten during sizing
 %           ---------------------------------------------------------------
-%           (19) Aircraft.Specs.Weight.EM
+%           (20) Aircraft.Specs.Weight.EM
 %                Description: Electric motor weight (mass)
 %                Units / Default Value: kilograms / 0
 %                NOTE: This value is used as an initial guess in the sizing
 %                      iteration, and will be overwritten during sizing
 %           ---------------------------------------------------------------
-%           (20) Aircraft.Specs.Weight.Fuel
+%           (21) Aircraft.Specs.Weight.Fuel
 %                Description: Fuel weight (mass)
 %                Units / Default Value: kilograms / PRED
 %                NOTE: This value is used as an initial guess in the sizing
 %                      iteration, and will be overwritten during sizing
 %           ---------------------------------------------------------------
-%           (21) Aircraft.Specs.Weight.Batt
+%           (22) Aircraft.Specs.Weight.Batt
 %                Description: Battery weight (mass)
 %                Units / Default Value: kilograms / 0
 %                NOTE: This value is used as an initial guess in the sizing
 %                      iteration, and will be overwritten during sizing
 %           ---------------------------------------------------------------
-%           (22) Aircraft.Specs.Weight.Payload
+%           (23) Aircraft.Specs.Weight.Payload
 %                Description: Payload weight (mass)
 %                Units / Default Value: kilograms / see note
 %                NOTE: This value defaults to 95 kilograms (~220 pounds)
@@ -202,13 +208,13 @@ function [] = README()
 %                design condition. See variable 70 for more information on
 %                off-design analysis.
 %           ---------------------------------------------------------------
-%           (23) Aircraft.Specs.Weight.WairfCF
+%           (24) Aircraft.Specs.Weight.WairfCF
 %                Description: Airframe weight calibration factor
 %                Units / Default Value: -- / 1
 %                NOTE: This will modify the value predicted by the airframe
 %                regressions during sizing
 %           ---------------------------------------------------------------
-%           (24) Aircraft.Specs.Propulsion.Engine
+%           (25) Aircraft.Specs.Propulsion.Engine
 %                Description: Engine specification file
 %                Units / Default Value: -- / see note
 %                NOTE: if left as NaN or uninstatiated, an engine will be
@@ -217,34 +223,34 @@ function [] = README()
 %                EngineModelPkg.EngineSpecsPkg.README, Section III.c and
 %                III.d for more information.
 %           ---------------------------------------------------------------
-%           (25) Aircraft.Specs.Propulsion.NumEngines
+%           (26) Aircraft.Specs.Propulsion.NumEngines
 %                Description: Number of gas turbine engines
 %                Units / Default Value: -- / 2
 %           ---------------------------------------------------------------
-%           (26) Aircraft.Specs.Propulsion.T_W.SLS
+%           (27) Aircraft.Specs.Propulsion.T_W.SLS
 %                Description: Thrust-to-weight ratio at static sea level
 %                Units / Default Value: -- / PRED
 %                NOTE: This value is overwritten for turboprops as power to
 %                weight ratio is used instead
 %           ---------------------------------------------------------------
-%           (27) Aircraft.Specs.Propulsion.Thrust.SLS
+%           (28) Aircraft.Specs.Propulsion.Thrust.SLS
 %                Description: Total thrust at static sea level (NOT per
 %                engine)
 %                Units / Default Value: Newtons / PRED
 %                NOTE: This value is overwritten for turboprops as power is
 %                used instead.
 %           ---------------------------------------------------------------
-%           (28) Aircraft.Specs.Propulsion.Eta.Prop
+%           (29) Aircraft.Specs.Propulsion.Eta.Prop
 %                NOTE: This parameter is obsolete and no longer used in the
 %                FAST sizing code.
 %           ---------------------------------------------------------------
-%           (29) Aircraft.Specs.Propulsion.MDotCF
+%           (30) Aircraft.Specs.Propulsion.MDotCF
 %                Description: Fuel (Jet-A) consumption calibration factor
 %                Units / Default Value: -- / 1
 %                NOTE: This will modify the value output by the gas turbine
 %                engine models during sizing.
 %           ---------------------------------------------------------------
-%           (30) Aircraft.Specs.Propulsion.Arch.Type
+%           (31) Aircraft.Specs.Propulsion.Arch.Type
 %                Description:
 %                Units / Default Value: -- / *REQ*
 %                NOTE 1: String input required, options are
@@ -261,23 +267,23 @@ function [] = README()
 %               list), otherwise the code will assume conventional
 %               architecture despite setting the type to other.
 %           ---------------------------------------------------------------
-%           (31) Aircraft.Specs.Power.SpecEnergy.Fuel
+%           (32) Aircraft.Specs.Power.SpecEnergy.Fuel
 %                Description: Fuel specific energy
 %                Units / Default Value: kiloWatt*hours_kilogram / 11.9
 %           ---------------------------------------------------------------
-%           (32) Aircraft.Specs.Power.SpecEnergy.Batt
+%           (33) Aircraft.Specs.Power.SpecEnergy.Batt
 %                Description: Battery specific energy
 %                Units / Default Value: kiloWatt*hours_kilogram / PRED
 %           ---------------------------------------------------------------
-%           (33) Aircraft.Specs.Power.Eta.EM
+%           (34) Aircraft.Specs.Power.Eta.EM
 %                Description: Electric motor efficiency
 %                Units / Default Value: -- / 0.96
 %           ---------------------------------------------------------------
-%           (34) Aircraft.Specs.Power.Eta.EG
+%           (35) Aircraft.Specs.Power.Eta.EG
 %                Description: Electric generator efficiency
 %                Units / Default Value: -- / 0.96
 %           ---------------------------------------------------------------
-%           (35) Aircraft.Specs.Power.Eta.Propeller
+%           (36) Aircraft.Specs.Power.Eta.Propeller
 %                Description: Propulsive (propeller) efficiency
 %                Units / Default Value: -- / 0.8
 %                NOTE: Turbofan efficiencies are calculated internal to the 
@@ -286,45 +292,45 @@ function [] = README()
 %                powered by turboshaft
 %                engines
 %           ---------------------------------------------------------------
-%           (36) Aircraft.Specs.Power.P_W.SLS
+%           (37) Aircraft.Specs.Power.P_W.SLS
 %                Description: Aircraft power-to-weight ratio at sea level
 %                static conditions.
 %                Units / Default Value: kiloWatts_kilogram / PRED
 %                NOTE: This value is overwritten for turbofans as thrust to
 %                weight ratio is used instead
 %           ---------------------------------------------------------------
-%           (37) Aircraft.Specs.Power.P_W.EM
+%           (38) Aircraft.Specs.Power.P_W.EM
 %                Description: Electric motor power-to-weight ratio
 %                Units / Default Value: kiloWatts_kilogram / PRED
 %           ---------------------------------------------------------------
-%           (38) Aircraft.Specs.Power.P_W.EG
+%           (39) Aircraft.Specs.Power.P_W.EG
 %                Description: Electric generator power-to-weight ratio
 %                Units / Default Value: kiloWatts_kilogram / 5
 %           ---------------------------------------------------------------
-%           (39) Aircraft.Specs.Power.LamTS.Tko
-%           (40) Aircraft.Specs.Power.LamTS.Clb
-%           (41) Aircraft.Specs.Power.LamTS.Crs
-%           (42) Aircraft.Specs.Power.LamTS.Des
-%           (43) Aircraft.Specs.Power.LamTS.Lnd
-%           (44) Aircraft.Specs.Power.LamTS.SLS
-%           (45) Aircraft.Specs.Power.LamTSPS.Tko
-%           (46) Aircraft.Specs.Power.LamTSPS.Clb
-%           (47) Aircraft.Specs.Power.LamTSPS.Crs
-%           (48) Aircraft.Specs.Power.LamTSPS.Des
-%           (49) Aircraft.Specs.Power.LamTSPS.Lnd
-%           (50) Aircraft.Specs.Power.LamTSPS.SLS
-%           (51) Aircraft.Specs.Power.LamPSPS.Tko
-%           (52) Aircraft.Specs.Power.LamPSPS.Clb
-%           (53) Aircraft.Specs.Power.LamPSPS.Crs
-%           (54) Aircraft.Specs.Power.LamPSPS.Des
-%           (55) Aircraft.Specs.Power.LamPSPS.Lnd
-%           (56) Aircraft.Specs.Power.LamPSPS.SLS
-%           (57) Aircraft.Specs.Power.LamPSES.Tko
-%           (58) Aircraft.Specs.Power.LamPSES.Clb
-%           (59) Aircraft.Specs.Power.LamPSES.Crs
-%           (60) Aircraft.Specs.Power.LamPSES.Des
-%           (61) Aircraft.Specs.Power.LamPSES.Lnd
-%           (62) Aircraft.Specs.Power.LamPSES.SLS
+%           (40) Aircraft.Specs.Power.LamTS.Tko
+%           (41) Aircraft.Specs.Power.LamTS.Clb
+%           (42) Aircraft.Specs.Power.LamTS.Crs
+%           (43) Aircraft.Specs.Power.LamTS.Des
+%           (44) Aircraft.Specs.Power.LamTS.Lnd
+%           (45) Aircraft.Specs.Power.LamTS.SLS
+%           (46) Aircraft.Specs.Power.LamTSPS.Tko
+%           (47) Aircraft.Specs.Power.LamTSPS.Clb
+%           (48) Aircraft.Specs.Power.LamTSPS.Crs
+%           (49) Aircraft.Specs.Power.LamTSPS.Des
+%           (50) Aircraft.Specs.Power.LamTSPS.Lnd
+%           (51) Aircraft.Specs.Power.LamTSPS.SLS
+%           (52) Aircraft.Specs.Power.LamPSPS.Tko
+%           (53) Aircraft.Specs.Power.LamPSPS.Clb
+%           (54) Aircraft.Specs.Power.LamPSPS.Crs
+%           (55) Aircraft.Specs.Power.LamPSPS.Des
+%           (56) Aircraft.Specs.Power.LamPSPS.Lnd
+%           (57) Aircraft.Specs.Power.LamPSPS.SLS
+%           (58) Aircraft.Specs.Power.LamPSES.Tko
+%           (59) Aircraft.Specs.Power.LamPSES.Clb
+%           (60) Aircraft.Specs.Power.LamPSES.Crs
+%           (61) Aircraft.Specs.Power.LamPSES.Des
+%           (62) Aircraft.Specs.Power.LamPSES.Lnd
+%           (63) Aircraft.Specs.Power.LamPSES.SLS
 %                Description: These variables are propulsion architecture
 %                power matrices. They have default configurations depending
 %                on which option was chosen for
@@ -334,60 +340,60 @@ function [] = README()
 %                without proper understanding. See the README in the main
 %                directory, Section II.1.f for more information.
 %           ---------------------------------------------------------------
-%           (63) Aircraft.Specs.Power.Battery.ParCells
+%           (64) Aircraft.Specs.Power.Battery.ParCells
 %                Description: Number of battery cells in parallel
 %                Units / Default Value: -- / NaN
 %                NOTE: If a user does not specify this variable, FAST will
 %                run a simplified battery model. See BatteryPkg.README,
 %                Section I for more information.
 %           ---------------------------------------------------------------
-%           (64) Aircraft.Specs.Power.Battery.SerCells 
+%           (65) Aircraft.Specs.Power.Battery.SerCells 
 %                Description: Number of battery cells in series
 %                Units / Default Value: -- / NaN
 %                NOTE: If a user does not specify this variable, FAST will
 %                run a simplified battery model. See BatteryPkg.README,
 %                Section I for more information.
 %           ---------------------------------------------------------------
-%           (65) Aircraft.Specs.Power.Battery.BegSOC
+%           (66) Aircraft.Specs.Power.Battery.BegSOC
 %                Description: Beginning state of charge for the battery
 %                Units / Default Value: percentage / 100
 %           ---------------------------------------------------------------
-%           (66) Aircraft.Settings.TkoPoints
+%           (67) Aircraft.Settings.TkoPoints
 %                Description: Number of discrete points used in the takeoff
 %                segment during sizing.
 %                Units / Default Value: -- / 10
 %           ---------------------------------------------------------------
-%           (67) Aircraft.Settings.ClbPoints
+%           (68) Aircraft.Settings.ClbPoints
 %                Description: Number of discrete points used in the climb
 %                segment during sizing.
 %                Units / Default Value: -- / 10
 %           ---------------------------------------------------------------
-%           (68) Aircraft.Settings.CrsPoints
+%           (69) Aircraft.Settings.CrsPoints
 %                Description: Number of discrete points used in the cruise
 %                segment during sizing.
 %                Units / Default Value: -- / 10
 %           ---------------------------------------------------------------
-%           (69) Aircraft.Settings.DesPoints
+%           (70) Aircraft.Settings.DesPoints
 %                Description: Number of discrete points used in the descent
 %                segment during sizing.
 %                Units / Default Value: -- / 10
 %           ---------------------------------------------------------------
-%           (70) Aircraft.Settings.OEW.MaxIter
+%           (71) Aircraft.Settings.OEW.MaxIter
 %                Description: Maximum number of iterations permitted when
 %                predicting operational empty weight.
 %                Units / Default Value: -- / 20
 %           ---------------------------------------------------------------
-%           (71) Aircraft.Settings.OEW.Tol
+%           (72) Aircraft.Settings.OEW.Tol
 %                Description: Convergence tolerance for the operational
 %                empty weight iteration.
 %                Units / Default Value: -- / 1e-6
 %           ---------------------------------------------------------------
-%           (72) Aircraft.Settings.Analysis.MaxIter
+%           (73) Aircraft.Settings.Analysis.MaxIter
 %                Description: Maximum number of iterations permitted in
 %                on-design or off-design alaysis
 %                Units / Default Value: -- / 50
 %           ---------------------------------------------------------------
-%           (73) Aircraft.Settings.Analysis.Type
+%           (74) Aircraft.Settings.Analysis.Type
 %                Description: On-design or off-design analysis flag
 %                Units / Default Value: -- / 1
 %                NOTE 1: Options are
@@ -406,50 +412,50 @@ function [] = README()
 %                structure. See MissionProfilesPkg.README, Section III.a
 %                for more information.
 %           ---------------------------------------------------------------
-%           (74) Aircraft.Settings.Plotting
+%           (75) Aircraft.Settings.Plotting
 %                Description: Mission history plotting flag
 %                Units / Default Value: -- / 0
 %                Note 1: Options are:
 %                       1 (plot mission history)
 %                       0 (do not plot mission history)
 %           ---------------------------------------------------------------
-%           (75) Aircraft.Settings.Table
+%           (76) Aircraft.Settings.Table
 %                Description: Mission history tabulation flag
 %                Units / Default Value: -- / 0
 %                Note 1: Options are:
 %                       1 (tabulate mission history)
 %                       0 (do not tabulate mission history)
 %           ---------------------------------------------------------------
-%           (76) Aircraft.Settings.VisualizeAircraft
+%           (77) Aircraft.Settings.VisualizeAircraft
 %                Description: Aircraft visualization flag
 %                Units / Default Value: -- / 0
 %                Note 1: Options are:
 %                       1 (visualize aircraft)
 %                       0 (do not visualize aircraft)
 %           ---------------------------------------------------------------
-%           (77) Aircraft.Settings.Dir.Size
+%           (78) Aircraft.Settings.Dir.Size
 %                Description: Sizing directory
 %                Units / Default Value: -- / Current Directory
 %                NOTE: Not recommended to modify this variable
 %           ---------------------------------------------------------------
-%           (78) Aircraft.Settings.Dir.Oper
+%           (79) Aircraft.Settings.Dir.Oper
 %                Description: Operations directory
 %                Units / Default Value: -- / EAP Directory
 %                NOTE: Not recommended to modify this variable
 %           ---------------------------------------------------------------
-%           (79) Aircraft.Settings.TkoTypeFlag
+%           (80) Aircraft.Settings.TkoTypeFlag
 %                Description: Select takeoff analysis parameter used
 %                Units / Default Value: -- / 1
 %                Note 1: Options are:
 %                       1 (time)
 %                      -1 (distance)
 %           ---------------------------------------------------------------
-%           (80) Aircraft.Geometry.LengthSet
+%           (81) Aircraft.Geometry.LengthSet
 %                Description: Fuselage length (used in aircraft
 %                visualization).
 %                Units / Default Value: meters / PRED
 %           ---------------------------------------------------------------
-%           (81) Aircraft.Geometry.Preset
+%           (82) Aircraft.Geometry.Preset
 %                Description: Geometry specification file
 %                Units / Default Value: -- / see note
 %                NOTE 1: A user may create their own aircraft geometry file
@@ -484,7 +490,7 @@ function [] = README()
 %               Aircraft.Specs.TLAR.Class             (Variable 2)
 %               Aircraft.Specs.TLAR.MaxPax            (Variable 3)
 %               Aircraft.Specs.Performance.Range      (Variable 9)
-%               Aircraft.Specs.Propulsion.Arch.Type   (Variable 30)
+%               Aircraft.Specs.Propulsion.Arch.Type   (Variable 31)
 %
 % end AircraftSpecsPkg.README
 %

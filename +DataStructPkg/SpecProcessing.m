@@ -287,6 +287,7 @@ end
 % DefaultAero.L_D.Clb = 15;                    % 0.6*cruise L_D
 %DefaultAero.L_D.Crs = 15;                     % regression
 %DefaultWeight.MTOW = 0;                     % regression
+DefaultAero.CL.Tko = NaN;
 DefaultWeight.MLW = 0;                      % good
 DefaultWeight.Batt = 0;                      % good
 DefaultWeight.EG = 0;                        % good
