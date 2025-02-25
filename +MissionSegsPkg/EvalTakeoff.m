@@ -216,8 +216,26 @@ else
         dv_dt = ( V_to^2 - V_i^2 ) / (2 * ToffDist);
     end
 
+    % the distance traveled in each time point------[npoint x 1]
+    Dist = 0.5 .* dv_dt .* Time .^ 2;
+
+    % instantanous velocity for each time------[npoint x 1]
+    V_ins = dv_dt .* Time;
+
+    % Instantaneous lift for each time -------[npoint x 1]
+    L_ins = .5 .* Rho .* V_ins.^2 .* CLTko .* S;
+
+    % Instantaneous drag for each time point ----- [npoint x 1]
+    D_ins = L_ins ./ L_ins*Aircraft.Specs.Aero.L_D.Clb;
+    
+    % Define friction coefficient 
+    mu = 0.03;
+    
+    % Instantaneous thrust
+    T_ins = dv_dt .* MTOW ./ g + D_ins + mu.*(MTOW - L_ins);
 
 end
+
 
 % the distance traveled in each time point------[npoint x 1]
 Dist = 0.5 .* dv_dt .* Time .^ 2;
@@ -228,7 +246,6 @@ V_ins = dv_dt .* Time;
 % get the flight conditions------[npoint x 1]      
 [EAS, TAS, Mach, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon(...
                                  Alt, dISA, "TAS", V_ins);
-
 
 % remember the flight conditions
 Aircraft.Mission.History.SI.Performance.TAS( SegBeg:SegEnd) = TAS ;
