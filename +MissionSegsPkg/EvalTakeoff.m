@@ -192,7 +192,10 @@ if isnan(Aircraft.Specs.Aero.CL.Tko)
 else
     
     CLTko = Aircraft.Specs.Aero.CL.Tko;
-
+    if CLTko <= 0
+        warning("Aircraft.Specs.Aero.CL.Tko must be greater than 0.")
+    end
+    
     % Get wing area from wing loading
     S = MTOW / Aircraft.Specs.Aero.W_S.SLS;
     
@@ -213,9 +216,10 @@ else
         dv_dt = ( V_to^2 - V_i^2 ) / (2 * ToffDist);
     end
 
+
 end
 
- % the distance traveled in each time point------[npoint x 1]
+% the distance traveled in each time point------[npoint x 1]
 Dist = 0.5 .* dv_dt .* Time .^ 2;
 
 % instantanous velocity for each time------[npoint x 1]
