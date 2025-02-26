@@ -83,6 +83,10 @@ V_i = 0;
 % temperature variation set by user or default to 0 -------[scalar]
 dISA = Aircraft.Specs.Performance.dISA;
 
+% Get density 
+[~, ~, ~, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon( ...
+                               AltEnd, dISA, vtype, V_i);
+
 % ----------------------------------------------------------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -198,10 +202,6 @@ else
     
     % Get wing area from wing loading
     S = MTOW / Aircraft.Specs.Aero.W_S.SLS;
-    
-    % Get density 
-    [~, ~, ~, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon( ...
-                               AltEnd, dISA, vtype, V_i);
 
     % Calculate takeoff velocity
     V_to = sqrt(2 * MTOW * g / (Rho * CLTko * S ));
@@ -219,8 +219,34 @@ else
         ToffTime = (V_to - V_i) / dv_dt;
         Time = linspace(0, ToffTime, npoint)';
     end
-end
+    
+    % the distance traveled in each time point------[npoint x 1]
+    Dist = 0.5 .* dv_dt .* Time .^ 2;
+    
+    % instantanous velocity for each time------[npoint x 1]
+    V_ins = dv_dt .* Time;
+    
+    % Instantaneous lift for each time -------[npoint x 1]
+    L_ins = .5 .* Rho .* V_ins.^2 .* CLTko .* S;
+    
+    % Instantaneous drag for each time point ----- [npoint x 1]
+    D_ins = L_ins ./ Aircraft.Specs.Aero.L_D.Clb;
+    
+    % Define friction coefficient (hardcoded for dry, hard-surface runway)
+    mu = 0.02;
+    
+    % Instantaneous thrust
+    T_ins = (dv_dt .* MTOW) + D_ins + mu.*(MTOW - L_ins);
+    
+    % Save the instantaneous parameters during takeoff
+    Aircraft.Mission.History.SI.Performance.Tko.Dist (SegBeg:SegEnd)= Dist;
+    Aircraft.Mission.History.SI.Performance.Tko.Time (SegBeg:SegEnd)= Time;
+    Aircraft.Mission.History.SI.Performance.Tko.V_Ins(SegBeg:SegEnd)= V_ins;
+    Aircraft.Mission.History.SI.Performance.Tko.L_ins(SegBeg:SegEnd)= L_ins;
+    Aircraft.Mission.History.SI.Performance.Tko.D_ins(SegBeg:SegEnd)= D_ins;
+    Aircraft.Mission.History.SI.Performance.Tko.T_ins(SegBeg:SegEnd)= T_ins;
 
+end
 
 % the distance traveled in each time point------[npoint x 1]
 Dist = 0.5 .* dv_dt .* Time .^ 2;
@@ -228,25 +254,7 @@ Dist = 0.5 .* dv_dt .* Time .^ 2;
 % instantanous velocity for each time------[npoint x 1]
 V_ins = dv_dt .* Time;
 
-% Instantaneous lift for each time -------[npoint x 1]
-L_ins = .5 .* Rho .* V_ins.^2 .* CLTko .* S;
 
-% Instantaneous drag for each time point ----- [npoint x 1]
-D_ins = L_ins ./ Aircraft.Specs.Aero.L_D.Clb;
-
-% Define friction coefficient (hardcoded for dry, hard-surface runway)
-mu = 0.02;
-
-% Instantaneous thrust
-T_ins = (dv_dt .* MTOW) + D_ins + mu.*(MTOW - L_ins);
-
-% Save the instantaneous parameters during takeoff
-Aircraft.Mission.History.SI.Performance.Tko.Dist (SegBeg:SegEnd)= Dist;
-Aircraft.Mission.History.SI.Performance.Tko.Time (SegBeg:SegEnd)= Time;
-Aircraft.Mission.History.SI.Performance.Tko.V_Ins(SegBeg:SegEnd)= V_ins;
-Aircraft.Mission.History.SI.Performance.Tko.L_ins(SegBeg:SegEnd)= L_ins;
-Aircraft.Mission.History.SI.Performance.Tko.D_ins(SegBeg:SegEnd)= D_ins;
-Aircraft.Mission.History.SI.Performance.Tko.T_ins(SegBeg:SegEnd)= T_ins;
 
 % get the flight conditions------[npoint x 1]      
 [EAS, TAS, Mach, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon(...
