@@ -2,7 +2,7 @@ function [Aircraft] = SpecProcessing(Aircraft)
 %
 % [Aircraft] = SpecProcessing(Aircraft)
 % written by Maxfield Arnson, marnson@umich.edu
-% lasat updated: 24 apr 2024
+% lasat updated: 13 dec 2024
 %
 % This function initializes mission outputs, runs regressions, and
 % overwrites values left as NaN in the user input. It prepares the aircraft
@@ -45,7 +45,6 @@ Geometry = Aircraft.Geometry;
 % remember the sizing directory
 SizeDir = Aircraft.Settings.Dir.Size;
 
-
 % remove the engine field for the regressions
 Engine = Propulsion.Engine;
 Propulsion = rmfield(Propulsion,'Engine');
@@ -65,7 +64,7 @@ if isnan(Performance.Range)
     error('Design Range (Aircraft.Performance.Range) not specified')
 end
 
-if ~isstring(Propulsion.Arch.Type) && ~ischar(Propulsion.Arch.Type)
+if ~isstring(Propulsion.PropArch.Type) && ~ischar(Propulsion.PropArch.Type)
     error('Propulsion Architecture (Aircraft.Propulsion.Arch) not specified')
 end
 
@@ -162,55 +161,55 @@ for i = 1:length(unknowns)
     IO{end+1} = Output;
     if length(Output) == 4 && isequal(Output,["Specs","Performance","Vels","Crs"])
         [DefaultPerformance.Vels.Crs,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     elseif length(Output) == 4 && isequal(Output,["Specs","Performance","Alts","Crs"])
         [DefaultPerformance.Alts.Crs,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     elseif length(Output) == 4 && isequal(Output,["Specs","Aero","L_D","Crs"])
         switch TLAR.Class
             case "Turbofan"
                 IO{end} = ["Specs","Aero","L_D","CrsMAC"];
                 [DefaultAero.L_D.Crs,~] = ...
-                    RegressionPkg.NLGPR(DataAC,IO,target,w);
+                    RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
             case "Turboprop"
                 DefaultAero.L_D.Crs = 16;
         end
     elseif length(Output) == 3 && isequal(Output,["Specs","Weight","MTOW"])
         [DefaultWeight.MTOW,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     elseif length(Output) == 4 && isequal(Output,["Specs","Propulsion","T_W","SLS"])
         %             if future
         %                 [DefaultPropulsion.T_W.SLS] = ...
         %                     Projection.KPPProjection(TLAR.Class, TLAR.EIS, 'Total Takeoff T/ MTOW');
         %             else
         [DefaultPropulsion.T_W.SLS,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
         %             end
 
 
     elseif length(Output) == 4 && isequal(Output,["Specs","Propulsion","Thrust","SLS"])
         [DefaultPropulsion.Thrust.SLS,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
         %         elseif length(Output) == 4 && isequal(Output,["Specs","Propulsion","Engine","TSFC_SLS"])
         %             if future
         %                 [DefaultPropulsion.TSFC] = ...
         %                     Projection.KPPProjection(TLAR.Class, TLAR.EIS, 'Cruise SFC');
         %             else
         %                 [DefaultPropulsion.TSFC,~] = ...
-        %                     RegressionPkg.NLGPR(DataAC,IO,target,w);
+        %                     RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
         %             end
     elseif length(Output) == 4 && isequal(Output,["Specs","Power","P_W","SLS"])
         [DefaultPower.P_W.SLS,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     elseif length(Output) == 3 && isequal(Output,["Specs","Power","SLS"])
         [DefaultPower.SLS,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     elseif length(Output) == 3 && isequal(Output,["Specs","Weight","Fuel"])
         [DefaultWeight.Fuel,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     elseif length(Output) == 4 && isequal(Output,["Specs","Aero","W_S","SLS"])
         [DefaultAero.W_S.SLS,~] = ...
-            RegressionPkg.NLGPR(DataAC,IO,target,w);
+            RegressionPkg.NLGPR(DataAC,IO,target,'Weights',w);
     end
 end
 
@@ -308,42 +307,24 @@ DefaultPropulsion.MDotCF = 1;
 % DefaultPower.P_W.AC = 5;                    regression
 % DefaultPower.P_W.Batt =                     *calculated*
 DefaultPower.Eta.Propeller = 0.8;
-DefaultPower.Phi.SLS = 0;                     % good
-DefaultPower.Phi.Tko = 0;                     % good
-DefaultPower.Phi.Clb = 0;                     % good
-DefaultPower.Phi.Crs = 0;                     % good
-DefaultPower.Phi.Des = 0;                     % good
-DefaultPower.Phi.Lnd = 0;                     % good
+DefaultPower.LamDwn.SLS = 0;
+DefaultPower.LamDwn.Tko = 0;
+DefaultPower.LamDwn.Clb = 0;
+DefaultPower.LamDwn.Crs = 0;
+DefaultPower.LamDwn.Des = 0;
+DefaultPower.LamDwn.Lnd = 0;
+DefaultPower.LamUps.SLS = 0;
+DefaultPower.LamUps.Tko = 0;
+DefaultPower.LamUps.Clb = 0;
+DefaultPower.LamUps.Crs = 0;
+DefaultPower.LamUps.Des = 0;
+DefaultPower.LamUps.Lnd = 0;
 DefaultPower.P_W.EG = 5;                      % good
 %DefaultPower.P_W.EM = 5;                     % EDC Projection
 % DefaultPower.SpecEnergy.Fuel = 4.32e7;               % if statement
 %DefaultPower.SpecEnergy.Batt = 0;                     % EDC Projection
 %DefaultPower.Eta.EM = 0.96;                 % switch case
 %DefaultPower.Eta.EG = 0.96;                 % switch case
-DefaultPower.LamTS.Tko = 0;
-DefaultPower.LamTS.Clb = 0;
-DefaultPower.LamTS.Crs = 0;
-DefaultPower.LamTS.Des = 0;
-DefaultPower.LamTS.Lnd = 0;
-DefaultPower.LamTS.SLS = 0;
-DefaultPower.LamTSPS.Tko = 0;
-DefaultPower.LamTSPS.Clb = 0;
-DefaultPower.LamTSPS.Crs = 0;
-DefaultPower.LamTSPS.Des = 0;
-DefaultPower.LamTSPS.Lnd = 0;
-DefaultPower.LamTSPS.SLS = 0;
-DefaultPower.LamPSPS.Tko = 0;
-DefaultPower.LamPSPS.Clb = 0;
-DefaultPower.LamPSPS.Crs = 0;
-DefaultPower.LamPSPS.Des = 0;
-DefaultPower.LamPSPS.Lnd = 0;
-DefaultPower.LamPSPS.SLS = 0;
-DefaultPower.LamPSES.Tko = 0;
-DefaultPower.LamPSES.Clb = 0;
-DefaultPower.LamPSES.Crs = 0;
-DefaultPower.LamPSES.Des = 0;
-DefaultPower.LamPSES.Lnd = 0;
-DefaultPower.LamPSES.SLS = 0;
 DefaultPower.Battery.ParCells = NaN;
 DefaultPower.Battery.SerCells = NaN;
 DefaultPower.Battery.BegSOC   = NaN;
@@ -361,10 +342,6 @@ DefaultSettings.Plotting = 0;            % 1 = plot 0 = no plots
 DefaultSettings.Table = 0;
 DefaultSettings.VisualizeAircraft = 0;
 DefaultSettings.TkoTypeFlag = 1;         % 1 = time, -1 = distance
-
-% optimization settings.
-DefaultSettings.PowerOpt.DesPowSplit =  0;
-DefaultSettings.PowerOpt.OpsPowSplit =  0;
 
 % directory
 DefaultSettings.Dir.Size = pwd;
@@ -404,7 +381,7 @@ switch TLAR.Class
         if TLAR.MaxPax > 200 % CHANGE THIS LATER/ find exact pax count
             DefaultGeometry.Preset = @(ACStruct)VisualizationPkg.GeometrySpecsPkg.LargeTurbofan(ACStruct);
         elseif TLAR.MaxPax > 100
-            DefaultGeometry.Preset = @(ACStruct)VisualizationPkg.GeometrySpecsPkg.SmallDoubleAisleTurbofan(ACStruct); 
+            DefaultGeometry.Preset = @(ACStruct)VisualizationPkg.GeometrySpecsPkg.SmallDoubleAisleTurbofan(ACStruct);
         else
             DefaultGeometry.Preset = @(ACStruct)VisualizationPkg.GeometrySpecsPkg.Transport(ACStruct);
         end
@@ -610,6 +587,27 @@ if Settings.Analysis.Type > -2
     Weight.Crew = Weight.Payload/26.1; % from Martins' Metabook
 end
 
+%% Preset computationally expensive regression parameters
+
+% for the OEW iteration
+% list parts of the aircraft structure to use in the regression
+IOspace = {["Specs", "Aero"      , "S"            ], ...
+    ["Specs", "Propulsion", "Thrust", "SLS"], ...
+    ["Specs", "TLAR"      , "EIS"          ], ...
+    ["Specs", "Weight"    , "MTOW"         ], ...
+    ["Specs", "Weight"    , "Airframe"     ]}   ;
+
+Prior = RegressionPkg.PriorCalculation(DataAC,IOspace);
+OEWWeights = [1 1 0.2 1];
+[RegressionParams.OEW.DataMatrix,    RegressionParams.OEW.HyperParams,     RegressionParams.OEW.InverseTerm] =...
+    RegressionPkg.RegProcessing(DataAC,IOspace,Prior, OEWWeights);
+
+% for engine sizing
+IOspace = {["Thrust_Max"],["DryWeight"]};
+Prior = RegressionPkg.PriorCalculation(DataEngine,IOspace);
+EngWeights = 1;
+[RegressionParams.WEngine.DataMatrix,    RegressionParams.WEngine.HyperParams,     RegressionParams.WEngine.InverseTerm] =...
+    RegressionPkg.RegProcessing(DataEngine,IOspace,Prior, EngWeights);
 
 %% Prepare Output Structure
 Propulsion.Engine = Engine;
@@ -624,6 +622,7 @@ Aircraft.Settings = Settings;
 Aircraft.Geometry = Geometry;
 Aircraft.HistData.AC = DataAC;
 Aircraft.HistData.Eng = DataEngine;
+Aircraft.RegressionParams = RegressionParams;
 
 %% Engine Specs
 
@@ -631,6 +630,3 @@ Aircraft = DataStructPkg.EngineSpecProcessing(Aircraft);
 
 
 end
-
-
-
