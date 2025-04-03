@@ -222,6 +222,10 @@ while (iter < MaxIter)
 
     % fly the mission
     Aircraft = MissionSegsPkg.FlyMission(Aircraft);
+
+    if isnan(Aircraft.Specs.Propulsion.T_W.SLS)
+                break
+    end
             
     % get fuel burn
     Fburn = Aircraft.Mission.History.SI.Weight.Fburn(end);
@@ -311,6 +315,14 @@ while (iter < MaxIter)
         (~any(mtow_conv > EPS))  )
         break;
     end 
+end
+
+if isnan(Aircraft.Specs.Propulsion.T_W.SLS)
+ % print a warning
+    warning('WARNING - EAPAnalysis: Takeoff conditions infeasible.');
+    
+    % show that it didn't converge
+    Aircraft.Settings.Converged = 0;
 end
 
 % print warning if maximum iterations reached

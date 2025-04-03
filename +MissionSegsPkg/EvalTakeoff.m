@@ -167,8 +167,6 @@ if isnan(Aircraft.Specs.Aero.CL.Tko)
         dv_dt = ( V_to^2 - V_i^2 ) / (2 * ToffDist);
     end
   
-
-
 % If user provides a takeoff CL, use a more detailed method
 else
     
@@ -194,6 +192,7 @@ else
       
         % Calculate takeoff time given distance and update Time vector
         ToffTime = (V_to - V_i) / dv_dt;
+        Aircraft.Specs.Performance.TkoTime = ToffTime;
         Time = linspace(0, ToffTime, npoint)';
     end
     
@@ -213,7 +212,7 @@ else
     mu = 0.02;
     
     % Instantaneous thrust
-    T_ins = (dv_dt .* MTOW) + D_ins + mu.*(MTOW - L_ins);
+    T_ins = (dv_dt .* MTOW) + D_ins + max( [mu.*(MTOW.*g - L_ins), zeros(size(L_ins))] , [], 2);
     
     % Save the instantaneous parameters during takeoff
     Aircraft.Mission.History.SI.Performance.Tko.Dist (SegBeg:SegEnd)= Dist;
@@ -222,6 +221,24 @@ else
     Aircraft.Mission.History.SI.Performance.Tko.L_ins(SegBeg:SegEnd)= L_ins;
     Aircraft.Mission.History.SI.Performance.Tko.D_ins(SegBeg:SegEnd)= D_ins;
     Aircraft.Mission.History.SI.Performance.Tko.T_ins(SegBeg:SegEnd)= T_ins;
+    
+    % check if thrust to weight ratio is greater than assumed T_W
+    TkoT_W = max(T_ins) / (MTOW.*g);
+
+    if ~isfield(Aircraft.Specs.Propulsion,"T_W")
+            Aircraft.Specs.Propulsion.T_W.SLS = NaN;
+    end
+    GivenT_W = Aircraft.Specs.Propulsion.T_W.SLS;
+
+    % if takeoff T_W greater than assumed T_W or if assumed T_W does not exist, 
+    % replace with greater value
+    if TkoT_W > 0.5
+        warning("Takeoff T_W exceeds 0.5; regression prediction unreliable.");
+        Aircraft.Specs.Propulsion.T_W.SLS = NaN;
+        return;
+    elseif TkoT_W > GivenT_W || isnan(GivenT_W)
+        Aircraft.Specs.Propulsion.T_W.SLS = TkoT_W;
+    end
 
 end
 
@@ -230,8 +247,6 @@ Dist = 0.5 .* dv_dt .* Time .^ 2;
 
 % instantanous velocity for each time------[npoint x 1]
 V_ins = dv_dt .* Time;
-
-
 
 % get the flight conditions------[npoint x 1]      
 [EAS, TAS, Mach, ~, ~, Rho, ~] = MissionSegsPkg.ComputeFltCon(...
@@ -252,6 +267,8 @@ Aircraft = PropulsionPkg.RecomputeSplits(Aircraft, SegBeg, SegEnd);
 
 % assume all available power is for flying
 Preq = Inf(npoint, 1);
+
+% Preq = T_ins.*V_ins;
 
 % compute the specific excess power (will be 0 - did this b/c we don't know drag at takeoff)
 Ps = zeros(npoint, 1);

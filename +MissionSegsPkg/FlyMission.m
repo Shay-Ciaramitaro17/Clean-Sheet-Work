@@ -164,10 +164,19 @@ for imiss = 1:nmiss
             % fly the segment
             Aircraft = feval(FunName, Aircraft);
 
+            if isnan(Aircraft.Specs.Propulsion.T_W.SLS)
+                break
+            end
+
+
             % remember how many elements are filled (offset by 1 for reset)
             if ((iter < 1) && (isegs < icrs))
                 ielem = SegEnd + 1;              
             end
+        end
+
+        if isnan(Aircraft.Specs.Propulsion.T_W.SLS)
+                break
         end
 
         % check if the target is not a number
@@ -204,9 +213,13 @@ for imiss = 1:nmiss
             % iterate
             iter = iter + 1;
        
-        end        
+        end  
     end
     
+    if isnan(Aircraft.Specs.Propulsion.T_W.SLS)
+                break
+    end
+
     % check if there's more missions to fly
     if (imiss < nmiss)
         
@@ -219,6 +232,7 @@ for imiss = 1:nmiss
     end
 end
     
+
 % ----------------------------------------------------------
 
 end
